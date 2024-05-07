@@ -1,78 +1,14 @@
 
-# Create IAM Role
-resource "aws_iam_role" "eks_master_role" {
-  name = "${local.name}-eks-master-role"
+# #AWS EBS CSI DRIVER Role
+resource "aws_iam_role" "ebs_csi_controller_role" {
+  name = "ebs-csi-controller-role"
 
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
-
-# Associate IAM Policy to IAM Role
-resource "aws_iam_role_policy_attachment" "eks-AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_master_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks-AmazonEKSVPCResourceController" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_master_role.name
-}
-
-/*
-# Optionally, enable Security Groups for Pods
-# Reference: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
-resource "aws_iam_role_policy_attachment" "eks-AmazonEKSVPCResourceController" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_master_role.name
-}
-*/
-
-# IAM Role for EKS Node Group 
-resource "aws_iam_role" "eks_nodegroup_role" {
-  name = "${local.name}-eks-nodegroup-role"
-
-  assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      }
-    }]
-    Version = "2012-10-17"
+  assume_role_policy = templatefile("policies/oidc_assume_role_policy.json", {
+    OIDC_ARN  = module.eks.oidc_provider_arn,
+    OIDC_URL  = module.eks.oidc_provider,
+    NAMESPACE = "kube-system",
+    SA_NAME   = "ebs-csi-controller-sa"
   })
+
+  managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"]
 }
-
-resource "aws_iam_role_policy_attachment" "eks-AmazonEKSWorkerNodePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.eks_nodegroup_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks-AmazonEKS_CNI_Policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.eks_nodegroup_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks-AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.eks_nodegroup_role.name
-}
-
-resource "aws_iam_instance_profile" "eks_nodegroup_instance_profile" {
-  name = "eks_nodegroup_role"
-  role = aws_iam_role.eks_nodegroup_role.name
-}
-
-

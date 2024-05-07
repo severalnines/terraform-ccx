@@ -47,9 +47,6 @@ module "vpc" {
     "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"    
   }
 
-  database_subnet_tags = {
-    Type = "database-subnets"
-  }
   # Instances launched into the Public subnet should be assigned a public IP address.
   map_public_ip_on_launch = true
 }# VPC Output Values
