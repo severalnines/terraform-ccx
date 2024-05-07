@@ -4,8 +4,11 @@ This guide outlines the steps to deploy the CCX application on Amazon EKS using 
 #### Clone Terraform Configuration Repository
 ```
 git clone git@github.com:severalnines/terraform-ccx.git
-cd terraform-ccx
+cd terraform-ccx/aws-eks
 ```
+Open the provider.tf file in the cloned repository.
+Add your AWS access key and secret key to the provider configuration.
+
 ####  Provision EKS Cluster
 Run the following Terraform commands:
 ```
@@ -78,4 +81,5 @@ Edit the minimal-values.yaml file in the helm-ccx folder by replacing the DNS na
 helm upgrade --install ccx helm-ccx/  --values helm-ccx/minimal-values.yaml --debug
 ```
 Note: Replace placeholders like <your-region>, <eks-cluster-name>, and AWS credentials with your actual values.
+The terraform will store the state in local but if you want to store in s3 bucket you need to edit the backend.tf file with configs
 
