@@ -23,6 +23,7 @@ Once the EKS clusters are created, use the following command to create the kubec
 ```
 aws eks update-kubeconfig --region <your-region> --name <eks-cluster-name>
 ```
+Replace placeholders like `<your-region>`, `<eks-cluster-name>` with your actual values.
 
 ####  Deploy CCX Workloads
 Create a namespace to deploy CCX workloads:
@@ -59,27 +60,30 @@ helm install ccxdeps ccxdeps/ccxdeps --debug --set ingressController.enabled=tru
 ```
 
 ####  Deploy CCX Application
-Clone the CCX Helm chart repository:
-
-```
-git clone git@github.com:severalnines/helm-ccx.git
-cd helm-ccx
-git checkout release/1.47-public-images-tests
-cd ../
-```
 
 Get the load balancer DNS name of the Nginx Ingress service:
 ```
 kubectl get services ingress-nginx-controller --output jsonpath='{.status.loadBalancer.ingress[0].ip}'
 ```
 
-Edit the minimal-values.yaml file in the helm-ccx folder by replacing the DNS name in ccxFQDN and sessionDomain fields.
+Create and Edit the values.yaml file by replacing the DNS name in ccxFQDN and sessionDomain fields.
+```
+sessionDomain: ccx.mycloud.com
+ccxFQDN: ccx.mycloud.com
+ccx:
+  cloudSecrets:
+   - aws
+```
 
-#### Deploy CCX using this command:
+##### Deploy CCX using this command:
 
 ```
-helm upgrade --install ccx helm-ccx/  --values helm-ccx/minimal-values.yaml --debug
+helm upgrade --install ccx ccx/ccx  --values values.yaml --version 1.47.0-alpha.2 --debug
 ```
-Note: Replace placeholders like <your-region>, <eks-cluster-name>, and AWS credentials with your actual values.
-The terraform will store the state in local but if you want to store in s3 bucket you need to edit the backend.tf file with configs
+For additional customizations, please refer to the [`terraform-aws-eks`](https://github.com/terraform-aws-modules/terraform-aws-eks)
+
+Note: 
+
+The terraform will store the state in local by default. To configure Terraform State Storage in S3, Open the backend.tf file in the cloned repository and Uncomment and configure the backend "s3" block with your S3 bucket details
+
 
