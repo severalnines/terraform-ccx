@@ -1,3 +1,8 @@
+## Requirement
+
+- terraform >= 1.3.2
+- aws >= 5.40
+
 ## Deploying CCX Application on Amazon EKS Using Terraform
 This guide outlines the steps to deploy the CCX application on Amazon EKS using Terraform for cluster provisioning and Helm for application deployment.
 
