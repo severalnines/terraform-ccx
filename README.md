@@ -83,7 +83,7 @@ ccx:
 ##### Deploy CCX using this command:
 
 ```
-helm upgrade --install ccx ccx/ccx  --values values.yaml --version 1.47.0-alpha.2 --debug
+helm upgrade --install ccx ccx/ccx  --values values.yaml --version 1.47.1 --debug
 ```
 For additional customizations, please refer to the [`terraform-aws-eks`](https://github.com/terraform-aws-modules/terraform-aws-eks)
 
