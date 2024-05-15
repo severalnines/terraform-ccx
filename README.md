@@ -71,6 +71,7 @@ Get the load balancer DNS name of the Nginx Ingress service:
 ```
 kubectl get services ingress-nginx-controller --output jsonpath='{.status.loadBalancer.ingress[0].ip}'
 ```
+If you have a proper domain name configured for your production environment, you can replace the load balancer DNS name with your domain name accordingly.
 
 Create and Edit the values.yaml file by replacing the DNS name in ccxFQDN and sessionDomain fields.
 ```
@@ -90,7 +91,7 @@ helm upgrade --install ccx s9s/ccx  --values values.yaml --version 1.47.1 --debu
 For additional customizations, please refer to the [`terraform-aws-eks`](https://github.com/terraform-aws-modules/terraform-aws-eks)
 
 Note: 
-
+This is for quickstart only. For Production environments, you need to customize your values file.
 The terraform will store the state in local by default. To configure Terraform State Storage in S3, Open the backend.tf file in the cloned repository and Uncomment and configure the backend "s3" block with your S3 bucket details
 
 
