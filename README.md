@@ -61,7 +61,8 @@ kubectl apply -f aws.yaml
 ####  Deploy CCX Dependencies
 
 ```
-helm install ccxdeps ccxdeps/ccxdeps --debug --set ingressController.enabled=true --set external-dns.enabled=true
+helm repo add s9s https://severalnines.github.io/helm-charts/
+helm install ccxdeps s9s/ccxdeps --debug --set ingressController.enabled=true --set external-dns.enabled=true
 ```
 
 ####  Deploy CCX Application
