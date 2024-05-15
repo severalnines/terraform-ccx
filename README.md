@@ -83,7 +83,8 @@ ccx:
 ##### Deploy CCX using this command:
 
 ```
-helm upgrade --install ccx ccx/ccx  --values values.yaml --version 1.47.1 --debug
+helm repo add s9s https://severalnines.github.io/helm-charts/
+helm upgrade --install ccx s9s/ccx  --values values.yaml --version 1.47.1 --debug
 ```
 For additional customizations, please refer to the [`terraform-aws-eks`](https://github.com/terraform-aws-modules/terraform-aws-eks)
 
