@@ -92,6 +92,7 @@ For additional customizations, please refer to the [`terraform-aws-eks`](https:/
 
 Note: 
 This is for quickstart only. For Production environments, you need to customize your values file.
+
 The terraform will store the state in local by default. To configure Terraform State Storage in S3, Open the backend.tf file in the cloned repository and Uncomment and configure the backend "s3" block with your S3 bucket details
 
 
